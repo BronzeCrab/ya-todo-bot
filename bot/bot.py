@@ -1,6 +1,7 @@
 import asyncio
 from datetime import datetime
 from collections import defaultdict
+import json
 
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
@@ -66,7 +67,7 @@ async def get_tasks(message):
         stats = defaultdict(int)
         tasks = []
         for task in query:
-            tasks.append(task)
+            tasks.append(str(task))
             stats[task.status] += 1
     except Exception as exc:
         await bot.reply_to(
@@ -76,7 +77,7 @@ async def get_tasks(message):
     else:
         await bot.reply_to(
             message,
-            f"Here is your tasks for {requested_date.strftime(DATE_FMT)}: {tasks}, stats: {stats}",
+            f"""Here is your tasks for {requested_date.strftime(DATE_FMT)}:\n\n{" \n".join(tasks)},\n\n stats: {json.dumps(stats, indent=2)}""",
         )
 
 
