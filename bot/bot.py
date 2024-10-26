@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime
+from collections import defaultdict
 
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
@@ -26,7 +27,7 @@ async def add_task(message):
     try:
         splited = message.text.split(" ")
         task_title = " ".join(splited[1:])
-        task = Task.create(title=task_title)
+        task = Task.create(title=task_title.strip())
     except Exception as exc:
         await bot.reply_to(
             message,
@@ -45,10 +46,27 @@ async def get_tasks(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
         return
 
-    today_date = datetime.today().date()
+    splited = message.text.split(" ")
+    date_str = " ".join(splited[1:]).strip().lower()
+    if date_str:
+        try:
+            today_date = datetime.strptime(date_str, "%d.%m.%Y")
+        except ValueError as err:
+            await bot.reply_to(
+                message,
+                f"Error converting date {date_str} to datetime: {err}",
+            )
+            return
+    else:
+        today_date = datetime.today().date()
+
     try:
         query = Task.select().where(Task.created_at == today_date)
-        tasks = [t for t in query]
+        stats = defaultdict(int)
+        tasks = []
+        for task in query:
+            tasks.append(task)
+            stats[task.status] += 1
     except Exception as exc:
         await bot.reply_to(
             message,
@@ -57,7 +75,7 @@ async def get_tasks(message):
     else:
         await bot.reply_to(
             message,
-            f"Here is your tasks for today: {tasks}",
+            f"Here is your tasks for {today_date}: {tasks}, stats: {stats}",
         )
 
 
@@ -70,12 +88,11 @@ async def echo_message(message):
 
 
 c1 = types.BotCommand(command="start", description="Start the Bot")
-c2 = types.BotCommand(command="help", description="Click for Help")
-c3 = types.BotCommand(command="add_task", description="Add the Task")
-c4 = types.BotCommand(
+c2 = types.BotCommand(command="add_task", description="Add the Task")
+c3 = types.BotCommand(
     command="get_tasks", description="Get all tasks for today"
 )
 
 
-asyncio.run(bot.set_my_commands([c1, c2, c3, c4]))
+asyncio.run(bot.set_my_commands([c1, c2, c3]))
 asyncio.run(bot.polling())

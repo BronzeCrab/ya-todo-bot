@@ -20,6 +20,9 @@ class Task(Model):
         database = db
         constraints = [SQL("UNIQUE (title, created_at)")]
 
+    def __str__(self) -> str:
+        return f"Task_id: {self.id}, status: {self.status}, title: {self.title}"
+
 
 db.connect()
 db.create_tables([Task])
