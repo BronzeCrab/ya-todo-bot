@@ -9,6 +9,7 @@ from bot.utils import check_user, config
 from db.db_stuff import Task
 
 bot = AsyncTeleBot(config["BOT_API_KEY"])
+DATE_FMT = "%d.%m.%Y"
 
 
 # Handle '/start' and '/help'
@@ -16,7 +17,7 @@ bot = AsyncTeleBot(config["BOT_API_KEY"])
 async def send_welcome(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
         return
-    text = "Hi, I am EchoBot.\nJust write me something and I will repeat it!"
+    text = "Hi, it's yet another todo app, but as telegram bot."
     await bot.reply_to(message, text)
 
 
@@ -50,7 +51,7 @@ async def get_tasks(message):
     date_str = " ".join(splited[1:]).strip().lower()
     if date_str:
         try:
-            today_date = datetime.strptime(date_str, "%d.%m.%Y")
+            requested_date = datetime.strptime(date_str, DATE_FMT)
         except ValueError as err:
             await bot.reply_to(
                 message,
@@ -58,10 +59,10 @@ async def get_tasks(message):
             )
             return
     else:
-        today_date = datetime.today().date()
+        requested_date = datetime.today().date()
 
     try:
-        query = Task.select().where(Task.created_at == today_date)
+        query = Task.select().where(Task.created_at == requested_date)
         stats = defaultdict(int)
         tasks = []
         for task in query:
@@ -75,16 +76,8 @@ async def get_tasks(message):
     else:
         await bot.reply_to(
             message,
-            f"Here is your tasks for {today_date}: {tasks}, stats: {stats}",
+            f"Here is your tasks for {requested_date.strftime(DATE_FMT)}: {tasks}, stats: {stats}",
         )
-
-
-# Handle all other messages with content_type 'text' (content_types defaults to ['text'])
-@bot.message_handler(func=lambda message: True)
-async def echo_message(message):
-    if not await check_user(bot, message, config["MY_TG_USERNAME"]):
-        return
-    await bot.reply_to(message, message.text)
 
 
 c1 = types.BotCommand(command="start", description="Start the Bot")
