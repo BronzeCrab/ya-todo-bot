@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
@@ -39,6 +40,27 @@ async def add_task(message):
         )
 
 
+@bot.message_handler(commands=["get_tasks"])
+async def get_tasks(message):
+    if not await check_user(bot, message, config["MY_TG_USERNAME"]):
+        return
+
+    today_date = datetime.today().date()
+    try:
+        query = Task.select().where(Task.created_at == today_date)
+        tasks = [t for t in query]
+    except Exception as exc:
+        await bot.reply_to(
+            message,
+            f"Error during getting tasks: {exc}",
+        )
+    else:
+        await bot.reply_to(
+            message,
+            f"Here is your tasks for today: {tasks}",
+        )
+
+
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
 @bot.message_handler(func=lambda message: True)
 async def echo_message(message):
@@ -50,6 +72,10 @@ async def echo_message(message):
 c1 = types.BotCommand(command="start", description="Start the Bot")
 c2 = types.BotCommand(command="help", description="Click for Help")
 c3 = types.BotCommand(command="add_task", description="Add the Task")
+c4 = types.BotCommand(
+    command="get_tasks", description="Get all tasks for today"
+)
 
-asyncio.run(bot.set_my_commands([c1, c2, c3]))
+
+asyncio.run(bot.set_my_commands([c1, c2, c3, c4]))
 asyncio.run(bot.polling())
