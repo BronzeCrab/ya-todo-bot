@@ -35,7 +35,7 @@ async def add_task(message):
         await bot.reply_to(
             message,
             f"""Created task with id: {task.id}, title: {task.title},
-            status: {task.status} created_at: {task.created_at}""",
+            status: {task.status} created_at: {task.created_at.date()}""",
         )
 
 
