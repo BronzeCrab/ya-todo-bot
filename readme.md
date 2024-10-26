@@ -16,7 +16,7 @@ Copy .env_example:
 cp .env_example .env
 ```
 
-Populate `.env` with your tg name and BOT API KEY, then:
+Populate `.env` with your `MY_TG_USERNAME` and your `BOT_API_KEY`, then:
 
 ```sh
 python -m bot.bot
