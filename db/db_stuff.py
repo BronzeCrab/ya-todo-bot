@@ -2,7 +2,7 @@ import datetime
 
 from peewee import Model, SqliteDatabase, CharField, DateField, Check, SQL
 
-db = SqliteDatabase("todo.db")
+db = SqliteDatabase("todos.db")
 
 
 class Task(Model):
