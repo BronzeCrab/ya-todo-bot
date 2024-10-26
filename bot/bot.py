@@ -22,8 +22,9 @@ async def send_welcome(message):
     await bot.reply_to(message, text)
 
 
-@bot.message_handler(commands=["add_task"])
-async def add_task(message):
+# todo: remake this func to receive multiple tasks
+@bot.message_handler(commands=["add_tasks"])
+async def add_tasks(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
         return
     try:
@@ -82,7 +83,7 @@ async def get_tasks(message):
 
 
 c1 = types.BotCommand(command="start", description="Start the Bot")
-c2 = types.BotCommand(command="add_task", description="Add the Task")
+c2 = types.BotCommand(command="add_tasks", description="Add some Tasks")
 c3 = types.BotCommand(
     command="get_tasks", description="Get all tasks for today"
 )

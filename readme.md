@@ -21,3 +21,9 @@ Populate `.env` with your tg name and BOT API KEY, then:
 ```sh
 python -m bot.bot
 ```
+
+## How to run tests:
+
+```sh
+python -m pytest
+```
