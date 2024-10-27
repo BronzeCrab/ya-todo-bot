@@ -6,7 +6,7 @@ It's yet another todo app, but as telegram bot.
 
 Install dependencies:
 
-```
+```sh
 pip install -r requirements.txt
 ```
 

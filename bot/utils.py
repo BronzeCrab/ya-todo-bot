@@ -11,25 +11,65 @@ async def check_user(bot, message, username: str) -> bool:
     return True
 
 
-def parse_titles(parsed: dict, command_str: str, j: int) -> None:
+def parse_arg(parsed: dict, command_str: str, j: int, arg: str) -> int:
     tmp_str = ""
-    while j < len(command_str):
+    while j < len(command_str) and command_str[j] not in ("-", "--"):
         tmp_str += command_str[j].strip()
         j += 1
-    parsed["titles"] = tmp_str.split(";")
+    parsed[arg] = tmp_str.split(";")
+    return j
 
 
 def parse_args(command_str: str) -> dict:
     parsed_dict = dict()
     i = 0
+    possible_args = ("-t", "-d", "-s", "-i")
+    possible_verbose_args = ("--titles", "--days", "--statuses", "--indexes")
     while i < len(command_str):
-        if "titles" not in parsed_dict:
-            if command_str[i : i + len("-t")].lower() == "-t":
-                j = i + len("-t")
-                parse_titles(parsed_dict, command_str, j)
-            elif command_str[i : i + len("--titles")].lower() == "--titles":
-                j = i + len("--titles")
-                parse_titles(parsed_dict, command_str, j)
-        i += 1
+        if command_str[i : i + len("-t")].lower() in possible_args:
+            j = i + len("-t")
+            arg = possible_verbose_args[
+                possible_args.index(command_str[i : i + len("-t")].lower())
+            ][2:]
+            j = parse_arg(parsed_dict, command_str, j, arg)
+            i = j
+        elif (
+            command_str[i : i + len(possible_verbose_args[0])].lower()
+            == possible_verbose_args[0]
+        ):
+            j = i + len(possible_verbose_args[0])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[0][2:]
+            )
+            i = j
+        elif (
+            command_str[i : i + len(possible_verbose_args[1])].lower()
+            == possible_verbose_args[1]
+        ):
+            j = i + len(possible_verbose_args[1])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[1][2:]
+            )
+            i = j
+        elif (
+            command_str[i : i + len(possible_verbose_args[2])].lower()
+            == possible_verbose_args[2]
+        ):
+            j = i + len(possible_verbose_args[2])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[2][2:]
+            )
+            i = j
+        elif (
+            command_str[i : i + len(possible_verbose_args[3])].lower()
+            == possible_verbose_args[3]
+        ):
+            j = i + len(possible_verbose_args[3])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[3][2:]
+            )
+            i = j
+        else:
+            i += 1
 
     return parsed_dict
