@@ -80,16 +80,17 @@ def parse_args(command_str: str) -> dict:
             i = j
         else:
             i += 1
-    # all command except /get_tasks should have some args:
-    if not command_str.startswith("/get_tasks") and not parsed_dict:
-        raise Exception(
-            f"ERROR: no valid command args in command {command_str}"
-        )
 
-    # /add_tasks also should has some titles:
+    # /add_tasks command should has some titles:
     if command_str.startswith("/add_tasks") and "titles" not in parsed_dict:
         raise Exception(
             f"ERROR: no '-t' or '--titles' arg in command {command_str}"
+        )
+
+    # all command except /get_tasks should have some args:
+    elif not command_str.startswith("/get_tasks") and not parsed_dict:
+        raise Exception(
+            f"ERROR: no valid command args in command {command_str}"
         )
 
     return parsed_dict

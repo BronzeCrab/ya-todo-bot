@@ -25,7 +25,7 @@ def test_add_tasks_no_args():
         parse_args(command_str)
     assert (
         str(exc.value)
-        == f"ERROR: no valid command args in command {command_str}"
+        == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
     )
 
     command_str = "/add_tasks -i 1;2"
@@ -34,6 +34,14 @@ def test_add_tasks_no_args():
     assert (
         str(exc.value)
         == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
+    )
+
+    command_str = "/edit_tasks"
+    with pytest.raises(Exception) as exc:
+        parse_args(command_str)
+    assert (
+        str(exc.value)
+        == f"ERROR: no valid command args in command {command_str}"
     )
 
 

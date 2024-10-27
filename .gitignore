@@ -1,3 +1,4 @@
 .env
 *.pyc
 todos.db
+test_todos.db
