@@ -22,7 +22,6 @@ async def send_welcome(message):
     await bot.reply_to(message, text)
 
 
-# todo: remake this func to receive multiple tasks
 @bot.message_handler(commands=["add_tasks"])
 async def add_tasks(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
@@ -34,7 +33,7 @@ async def add_tasks(message):
             await bot.reply_to(
                 message,
                 f"""Created task with id: {task.id}, title: {task.title},
-                status: {task.status} created_at: {task.created_at.date()}""",
+                status: {task.status} task_date: {task.task_date.date()}""",
             )
     except Exception as exc:
         await bot.reply_to(
@@ -64,7 +63,7 @@ async def get_tasks(message):
         requested_date = datetime.today().date()
 
     try:
-        query = Task.select().where(Task.created_at == requested_date)
+        query = Task.select().where(Task.task_date == requested_date)
         stats = defaultdict(int)
         tasks = []
         for task in query:

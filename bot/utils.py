@@ -1,5 +1,6 @@
 from dotenv import dotenv_values
 
+from bot.task_dc import TaskItem
 
 config = dotenv_values(".env")
 
@@ -79,7 +80,7 @@ def parse_args(command_str: str) -> dict:
             i = j
         else:
             i += 1
-    # all command except /get_tasks should have args:
+    # all command except /get_tasks should have some args:
     if not command_str.startswith("/get_tasks") and not parsed_dict:
         raise Exception(
             f"ERROR: no valid command args in command {command_str}"
@@ -92,3 +93,47 @@ def parse_args(command_str: str) -> dict:
         )
 
     return parsed_dict
+
+
+def get_current_item(alist: list, ind: int):
+    if ind < len(alist):
+        item = alist[ind]
+    elif len(alist) == 1:
+        item = alist[0]
+    else:
+        item = None
+    return item
+
+
+def parse_task_items(parsed_dict: dict) -> list[TaskItem]:
+    titles, task_dates, indexes, statuses = [], [], [], []
+    if "titles" in parsed_dict:
+        titles = parsed_dict["titles"]
+    if "dates" in parsed_dict:
+        task_dates = parsed_dict["dates"]
+    if "indexes" in parsed_dict:
+        indexes = parsed_dict["indexes"]
+    if "statuses" in parsed_dict:
+        statuses = parsed_dict["statuses"]
+
+    task_items: list[TaskItem] = []
+    i = 0
+    while not (
+        i >= len(titles)
+        and i >= len(task_dates)
+        and i >= len(indexes)
+        and i >= len(statuses)
+    ):
+        title = get_current_item(titles, i)
+        task_date = get_current_item(task_dates, i)
+        index = get_current_item(indexes, i)
+        status = get_current_item(statuses, i)
+
+        task_item = TaskItem(
+            title=title, index=index, status=status, task_date=task_date
+        )
+        task_items.append(task_item)
+
+        i += 1
+
+    return task_items

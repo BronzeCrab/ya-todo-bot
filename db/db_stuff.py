@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from peewee import Model, SqliteDatabase, CharField, DateField, Check, SQL
 
@@ -12,16 +12,17 @@ class Task(Model):
         ]
     )
     status = CharField(default="todo")
-    created_at = DateField(
-        default=datetime.datetime.now,
+    task_date = DateField(
+        default=datetime.now,
+        null=True,
     )
 
     class Meta:
         database = db
-        constraints = [SQL("UNIQUE (title, created_at)")]
+        constraints = [SQL("UNIQUE (title, task_date)")]
 
     def __str__(self) -> str:
-        return f"Task_id: {self.id}, status: {self.status}, title: {self.title}"
+        return f"Task_id: {self.id}, status: {self.status}, title: {self.title} date: {self.task_date}"
 
 
 db.connect()
