@@ -28,19 +28,18 @@ async def add_tasks(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
         return
     try:
-        splited = message.text.split(" ")
-        task_title = " ".join(splited[1:])
-        task = Task.create(title=task_title.strip())
+        parsed_dict = parse_args(message.text)
+        for task_title in parsed_dict["titles"]:
+            task = Task.create(title=task_title.strip().lower())
+            await bot.reply_to(
+                message,
+                f"""Created task with id: {task.id}, title: {task.title},
+                status: {task.status} created_at: {task.created_at.date()}""",
+            )
     except Exception as exc:
         await bot.reply_to(
             message,
-            f"Error during creating the task: {exc}",
-        )
-    else:
-        await bot.reply_to(
-            message,
-            f"""Created task with id: {task.id}, title: {task.title},
-            status: {task.status} created_at: {task.created_at.date()}""",
+            f"Error during creating tasks: {exc}",
         )
 
 
@@ -49,9 +48,10 @@ async def get_tasks(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
         return
 
-    splited = message.text.split(" ")
-    date_str = " ".join(splited[1:]).strip().lower()
-    if date_str:
+    parsed_dict = parse_args(message.text)
+
+    if parsed_dict:
+        date_str = parsed_dict["dates"][0]
         try:
             requested_date = datetime.strptime(date_str, DATE_FMT)
         except ValueError as err:
@@ -76,10 +76,16 @@ async def get_tasks(message):
             f"Error during getting tasks: {exc}",
         )
     else:
-        await bot.reply_to(
-            message,
-            f"""Here is your tasks for {requested_date.strftime(DATE_FMT)}:\n\n{" \n".join(tasks)},\n\n stats: {json.dumps(stats, indent=2)}""",
-        )
+        if tasks:
+            await bot.reply_to(
+                message,
+                f"""Here is your tasks for {requested_date.strftime(DATE_FMT)}:\n\n{" \n".join(tasks)},\n\n stats: {json.dumps(stats, indent=2)}""",
+            )
+        else:
+            await bot.reply_to(
+                message,
+                f"""Sorry, there is no tasks for {requested_date.strftime(DATE_FMT)}""",
+            )
 
 
 c1 = types.BotCommand(command="start", description="Start the Bot")
