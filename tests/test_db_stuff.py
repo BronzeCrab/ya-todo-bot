@@ -1,16 +1,33 @@
-from db.db_stuff import Task, SqliteDatabase
+from db.db_stuff import Task
 
-test_db = SqliteDatabase("test_todos.db")
-test_db.connect()
-test_db.create_tables([Task])
+import pytest
+from peewee import IntegrityError
 
 
-def test_task_create():
-    q = Task.delete()
-    q.execute()
+def test_task_create_ok(db_connection):
     assert Task.select().count() == 0
     task = Task.create(title="test", task_date=None)
     assert Task.select().count() == 1
     assert task.title == "test"
     assert task.task_date is None
     assert task.status == "todo"
+
+
+def test_task_create_no_title(db_connection):
+    assert Task.select().count() == 0
+    with pytest.raises(IntegrityError) as err:
+        task = Task.create()
+    assert str(err.value) == "NOT NULL constraint failed: task.title"
+    assert Task.select().count() == 0
+
+
+def test_task_create_duplicate_err(db_connection, created_task):
+    assert Task.select().count() == 1
+    with pytest.raises(IntegrityError) as err:
+        task = Task.create(
+            title=created_task.title, task_date=created_task.task_date
+        )
+    assert (
+        str(err.value) == "UNIQUE constraint failed: task.title, task.task_date"
+    )
+    assert Task.select().count() == 1

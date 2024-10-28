@@ -73,10 +73,18 @@ Get all tasks for specific date with `todo` status:
 /get_tasks -d 27.10.2024 -s todo
 ```
 
-Get all tasks for specific dates with `todo` and `done` statuses respectively:
+Get all tasks for specific dates with `todo` and `done` statuses respectively (
+i.e. only `todo` tasks from first date, plus only `done` from second date):
 
 ```sh
 /get_tasks -d 27.10.2024;28.10.2024 -s todo;done
+```
+
+Get all tasks for specific dates with `todo` and `done` statuses (
+i.e. all tasks with both statues from two dates):
+
+```sh
+/get_tasks -d 27.10.2024;28.10.2024 -s todo+done
 ```
 
 ## How to run tests:
