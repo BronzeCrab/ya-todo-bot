@@ -115,7 +115,9 @@ def test_get_current_item_status_exception():
     ind = 1
     with pytest.raises(Exception) as exc:
         get_current_item(statuses, ind, is_statuses=True)
-    assert str(exc.value) == f"ERROR: status {statuses[ind]} is not allowed"
+    assert str(exc.value).startswith(
+        f"ERROR: status {statuses[ind]} is not allowed"
+    )
 
 
 def test_parse_task_items():

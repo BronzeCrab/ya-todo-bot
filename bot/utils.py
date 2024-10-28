@@ -109,11 +109,14 @@ def convert_str_date_to_datetime(possible_date_str):
 
 def check_status(possible_status):
     allowed_statuses = config["POSSIBLE_STATUSES"].split(";")
+    allowed_statuses = [st.lower().strip() for st in allowed_statuses]
     if (
         type(possible_status) is str
         and possible_status.strip().lower() not in allowed_statuses
     ):
-        raise Exception(f"ERROR: status {possible_status} is not allowed")
+        raise Exception(
+            f"ERROR: status {possible_status} is not allowed, allowed: {allowed_statuses}"
+        )
 
 
 def get_current_item(
