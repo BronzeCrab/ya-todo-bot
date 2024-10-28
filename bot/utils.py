@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from dotenv import dotenv_values
 
 from bot.task_dc import TaskItem
@@ -96,13 +98,25 @@ def parse_args(command_str: str) -> dict:
     return parsed_dict
 
 
-def get_current_item(alist: list, ind: int):
+def convert_str_date_to_datetime(possible_date_str):
+    if (
+        type(possible_date_str) is str
+        and possible_date_str.strip().lower() == "today"
+    ):
+        return datetime.today().date()
+    return possible_date_str
+
+
+def get_current_item(alist: list, ind: int, is_dates=False):
     if ind < len(alist):
         item = alist[ind]
     elif len(alist) == 1:
         item = alist[0]
     else:
         item = None
+
+    if is_dates:
+        return convert_str_date_to_datetime(item)
     return item
 
 
@@ -126,7 +140,7 @@ def parse_task_items(parsed_dict: dict) -> list[TaskItem]:
         and i >= len(statuses)
     ):
         title = get_current_item(titles, i)
-        task_date = get_current_item(task_dates, i)
+        task_date = get_current_item(task_dates, i, is_dates=True)
         index = get_current_item(indexes, i)
         status = get_current_item(statuses, i)
 

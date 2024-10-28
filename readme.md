@@ -53,6 +53,13 @@ with statuses `todo` and `done` respectively:
 /add_tasks -t title1;title2 -d 27.10.2024 -s todo;done
 ```
 
+Create two tasks with titles `title1` and `title2` for today date
+with status `todo`:
+
+```sh
+/add_tasks -t title1;title2 -d today -s todo
+```
+
 ### How to get tasks:
 
 Get all tasks for today:

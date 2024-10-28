@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from bot.utils import parse_args, get_current_item, parse_task_items
@@ -19,6 +21,16 @@ def test_parse_args_edit_tasks():
     }
 
 
+def test_add_tasks_for_today():
+    command_str = "/add_tasks -d today -t title1;title2 -s todo"
+    parsed_dict = parse_args(command_str)
+    assert parsed_dict == {
+        "dates": ["today"],
+        "titles": ["title1", "title2"],
+        "statuses": ["todo"],
+    }
+
+
 def test_add_tasks_no_args():
     command_str = "/add_tasks"
     with pytest.raises(Exception) as exc:
@@ -36,6 +48,8 @@ def test_add_tasks_no_args():
         == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
     )
 
+
+def test_edit_tasks_no_args():
     command_str = "/edit_tasks"
     with pytest.raises(Exception) as exc:
         parse_args(command_str)
@@ -84,6 +98,16 @@ def test_get_current_item():
     ind = 0
     status = get_current_item(statuses, ind)
     assert status == statuses[0]
+
+    dates = ["11.07.1989", " toDay   "]
+    ind = 0
+    some_date = get_current_item(dates, ind, is_dates=True)
+    assert some_date == dates[0]
+
+    ind = 1
+    some_date = get_current_item(dates, ind, is_dates=True)
+    assert some_date != dates[ind]
+    assert isinstance(some_date, datetime.date)
 
 
 def test_parse_task_items():

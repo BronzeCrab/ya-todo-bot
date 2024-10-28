@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 
 import pytest
 
@@ -7,12 +8,14 @@ from db.db_stuff import Task, SqliteDatabase
 
 @pytest.fixture(scope="function")
 def db_connection():
-    test_db = SqliteDatabase("test_todos.db")
+    path = Path("test_todos.db")
+    test_db = SqliteDatabase(path)
     test_db.connect()
     test_db.create_tables([Task])
     yield test_db
     q = Task.delete()
     q.execute()
+    path.unlink()
 
 
 @pytest.fixture(scope="function")

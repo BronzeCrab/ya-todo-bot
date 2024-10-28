@@ -6,7 +6,7 @@ import json
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
 
-from bot.utils import check_user, config, parse_args
+from bot.utils import check_user, config, parse_args, parse_task_items
 from db.db_stuff import Task
 
 bot = AsyncTeleBot(config["BOT_API_KEY"])
@@ -26,20 +26,36 @@ async def send_welcome(message):
 async def add_tasks(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
         return
+
     try:
         parsed_dict = parse_args(message.text)
-        for task_title in parsed_dict["titles"]:
-            task = Task.create(title=task_title.strip().lower())
-            await bot.reply_to(
-                message,
-                f"""Created task with id: {task.id}, title: {task.title},
-                status: {task.status} task_date: {task.task_date.date()}""",
-            )
+        task_items = parse_task_items(parsed_dict)
     except Exception as exc:
         await bot.reply_to(
             message,
-            f"Error during creating tasks: {exc}",
+            f"Error during parsing args while creating tasks: {exc}",
         )
+        return
+
+    for task_item in task_items:
+        try:
+            task = Task.create(
+                title=task_item.title.strip().lower(),
+                status=task_item.status,
+                task_date=task_item.task_date,
+            )
+        except Exception as exc:
+            await bot.reply_to(
+                message,
+                f"""Error creating task with title: {task_item.title.strip().lower()},
+                status: {task_item.status}, task_date: {task_item.task_date.date()}""",
+            )
+        else:
+            await bot.reply_to(
+                message,
+                f"""Created task with id: {task.id}, title: {task.title},
+                status: {task.status}, task_date: {task.task_date.date()}""",
+            )
 
 
 @bot.message_handler(commands=["get_tasks"])
