@@ -16,7 +16,8 @@ Copy `.env_example` file:
 cp .env_example .env
 ```
 
-Populate `.env` file with your `MY_TG_USERNAME` and your `BOT_API_KEY`, then:
+Populate `.env` file with your `MY_TG_USERNAME` and your `BOT_API_KEY`,
+also, you can specify `POSSIBLE_STATUSES` divided by `;` and your `DATE_FMT` as you want, then:
 
 ```sh
 python -m bot.bot

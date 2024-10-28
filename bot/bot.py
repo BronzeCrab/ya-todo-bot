@@ -10,7 +10,7 @@ from bot.utils import check_user, config, parse_args, parse_task_items
 from db.db_stuff import Task
 
 bot = AsyncTeleBot(config["BOT_API_KEY"])
-DATE_FMT = "%d.%m.%Y"
+DATE_FMT = config["DATE_FMT"]
 
 
 # Handle '/start' and '/help'
