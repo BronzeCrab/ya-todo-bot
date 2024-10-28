@@ -28,7 +28,7 @@ python -m bot.bot
 This bot has several commands: `/add_tasks`, `/get_tasks`, `/edit_tasks`, `/delete_tasks`,
 `/copy_tasks`, `/move_tasks`
 
-### How to create tasks:
+### How to create tasks (`/add_tasks` command):
 
 Create two tasks with titles `title1` and `title2` for current date:
 
@@ -61,7 +61,7 @@ with status `todo`:
 /add_tasks -t title1;title2 -d today -s todo
 ```
 
-### How to get tasks:
+### How to get tasks (`/get_tasks` command):
 
 Get all tasks for today:
 
