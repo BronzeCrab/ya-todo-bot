@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dotenv import dotenv_values
 
@@ -104,6 +104,10 @@ def convert_str_date_to_datetime(possible_date_str):
         and possible_date_str.strip().lower() == "today"
     ):
         return datetime.today().date()
+    elif type(
+        possible_date_str
+    ) is str and possible_date_str.strip().lower().startswith("tom"):
+        return datetime.today().date() + timedelta(days=1)
     return possible_date_str
 
 

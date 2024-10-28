@@ -110,6 +110,15 @@ def test_get_current_item():
     assert isinstance(some_date, datetime.date)
 
 
+def test_get_current_item_tomorrow():
+    dates = ["11.07.1989", " toDay   ", "tomorrow"]
+    ind = 2
+    some_date = get_current_item(dates, ind, is_dates=True)
+    assert some_date != dates[ind]
+    assert isinstance(some_date, datetime.date)
+    assert some_date > datetime.datetime.today().date()
+
+
 def test_get_current_item_status_exception():
     statuses = ["todo", "doing42", "done"]
     ind = 1
