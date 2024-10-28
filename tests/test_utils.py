@@ -81,12 +81,12 @@ def test_get_tasks_wrong():
 def test_get_current_item():
     statuses = ["todo", "doing", "done"]
     ind = 0
-    status = get_current_item(statuses, ind)
+    status = get_current_item(statuses, ind, is_statuses=True)
     assert status == statuses[ind]
 
     statuses = ["todo", "doing", "done"]
     ind = len(statuses)
-    status = get_current_item(statuses, ind)
+    status = get_current_item(statuses, ind, is_statuses=True)
     assert status is None
 
     statuses = ["todo"]
@@ -108,6 +108,14 @@ def test_get_current_item():
     some_date = get_current_item(dates, ind, is_dates=True)
     assert some_date != dates[ind]
     assert isinstance(some_date, datetime.date)
+
+
+def test_get_current_item_status_exception():
+    statuses = ["todo", "doing42", "done"]
+    ind = 1
+    with pytest.raises(Exception) as exc:
+        get_current_item(statuses, ind, is_statuses=True)
+    assert str(exc.value) == f"ERROR: status {statuses[ind]} is not allowed"
 
 
 def test_parse_task_items():

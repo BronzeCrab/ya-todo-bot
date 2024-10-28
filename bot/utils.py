@@ -107,7 +107,21 @@ def convert_str_date_to_datetime(possible_date_str):
     return possible_date_str
 
 
-def get_current_item(alist: list, ind: int, is_dates=False):
+def check_status(possible_status):
+    allowed_statuses = config["POSSIBLE_STATUSES"].split(";")
+    if (
+        type(possible_status) is str
+        and possible_status.strip().lower() not in allowed_statuses
+    ):
+        raise Exception(f"ERROR: status {possible_status} is not allowed")
+
+
+def get_current_item(
+    alist: list,
+    ind: int,
+    is_dates=False,
+    is_statuses=False,
+):
     if ind < len(alist):
         item = alist[ind]
     elif len(alist) == 1:
@@ -117,6 +131,8 @@ def get_current_item(alist: list, ind: int, is_dates=False):
 
     if is_dates:
         return convert_str_date_to_datetime(item)
+    elif is_statuses:
+        check_status(item)
     return item
 
 
@@ -142,10 +158,13 @@ def parse_task_items(parsed_dict: dict) -> list[TaskItem]:
         title = get_current_item(titles, i)
         task_date = get_current_item(task_dates, i, is_dates=True)
         index = get_current_item(indexes, i)
-        status = get_current_item(statuses, i)
+        status = get_current_item(statuses, i, is_statuses=True)
 
         task_item = TaskItem(
-            title=title, index=index, status=status, task_date=task_date
+            title=title,
+            index=index,
+            status=status,
+            task_date=task_date,
         )
         task_items.append(task_item)
 
