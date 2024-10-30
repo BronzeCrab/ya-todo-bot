@@ -99,10 +99,9 @@ def parse_args(command_str: str) -> dict:
 
 
 def convert_str_date_to_datetime(possible_date_str):
-    if (
-        type(possible_date_str) is str
-        and possible_date_str.strip().lower() == "today"
-    ):
+    if type(
+        possible_date_str
+    ) is str and possible_date_str.strip().lower().startswith("tod"):
         return datetime.today().date()
     elif type(
         possible_date_str

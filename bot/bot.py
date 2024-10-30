@@ -47,14 +47,12 @@ async def add_tasks(message):
         except Exception as exc:
             await bot.reply_to(
                 message,
-                f"""Error creating task with title: {task_item.title.strip().lower()},
-                status: {task_item.status}, task_date: {task_item.task_date.date()}""",
+                f"""Error {exc} creating task with title: {task_item.title.strip().lower()}, status: {task_item.status}, task_date: {task_item.task_date.date()}""",
             )
         else:
             await bot.reply_to(
                 message,
-                f"""Created task with id: {task.id}, title: {task.title},
-                status: {task.status}, task_date: {task.task_date.date()}""",
+                f"""Created task with id: {task.id}, title: {task.title}, status: {task.status}, task_date: {task.task_date.date()}""",
             )
 
 
@@ -62,45 +60,45 @@ async def add_tasks(message):
 async def get_tasks(message):
     if not await check_user(bot, message, config["MY_TG_USERNAME"]):
         return
-
-    parsed_dict = parse_args(message.text)
-
-    if parsed_dict:
-        date_str = parsed_dict["dates"][0]
-        try:
-            requested_date = datetime.strptime(date_str, DATE_FMT)
-        except ValueError as err:
-            await bot.reply_to(
-                message,
-                f"Error converting date {date_str} to datetime: {err}",
-            )
-            return
-    else:
-        requested_date = datetime.today().date()
-
     try:
-        query = Task.select().where(Task.task_date == requested_date)
-        stats = defaultdict(int)
-        tasks = []
-        for task in query:
-            tasks.append(str(task))
-            stats[task.status] += 1
+        parsed_dict = parse_args(message.text)
+        task_items = parse_task_items(parsed_dict)
     except Exception as exc:
         await bot.reply_to(
             message,
-            f"Error during getting tasks: {exc}",
+            f"Error during parsing args while getting tasks: {exc}",
+        )
+        return
+
+    tasks = []
+    stats = defaultdict(int)
+    for task_item in task_items:
+        try:
+            # TODO: think more about it
+            query = Task.select().where(
+                Task.task_date == task_item.task_date,
+                Task.status == task_item.status,
+                Task.title == task_item.title,
+                Task.id == task_item.index,
+            )
+            for task in query:
+                tasks.append(str(task))
+                stats[task.status] += 1
+        except Exception as exc:
+            await bot.reply_to(
+                message,
+                f"Error during getting tasks: {exc}",
+            )
+    if tasks:
+        await bot.reply_to(
+            message,
+            f"""Here is your tasks for {requested_date.strftime(DATE_FMT)}:\n\n{" \n".join(tasks)},\n\n stats: {json.dumps(stats, indent=2)}""",
         )
     else:
-        if tasks:
-            await bot.reply_to(
-                message,
-                f"""Here is your tasks for {requested_date.strftime(DATE_FMT)}:\n\n{" \n".join(tasks)},\n\n stats: {json.dumps(stats, indent=2)}""",
-            )
-        else:
-            await bot.reply_to(
-                message,
-                f"""Sorry, there is no tasks for {requested_date.strftime(DATE_FMT)}""",
-            )
+        await bot.reply_to(
+            message,
+            f"""Sorry, there is no tasks for {requested_date.strftime(DATE_FMT)}""",
+        )
 
 
 c1 = types.BotCommand(command="start", description="Start the Bot")

@@ -15,6 +15,15 @@ def test_task_create_ok(db_connection):
     assert task.status == "todo"
 
 
+def test_task_create_date_should_be_None(db_connection):
+    assert Task.select().count() == 0
+    task = Task.create(title="test")
+    assert Task.select().count() == 1
+    assert task.title == "test"
+    assert task.task_date is None
+    assert task.status == "todo"
+
+
 def test_task_create_with_not_null_date(db_connection):
     assert Task.select().count() == 0
     task = Task.create(
@@ -45,3 +54,12 @@ def test_task_create_duplicate_err(db_connection, created_task):
         str(err.value) == "UNIQUE constraint failed: task.title, task.task_date"
     )
     assert Task.select().count() == 1
+
+
+def test_query_task_by_id(db_connection, created_task):
+    assert Task.select().count() == 1
+
+    task = Task.select().where(Task.id == created_task.id).get()
+
+    assert task.id == created_task.id
+    assert task.title == created_task.title

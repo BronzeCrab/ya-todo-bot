@@ -12,10 +12,7 @@ class Task(Model):
         ]
     )
     status = CharField(default="todo")
-    task_date = DateField(
-        default=datetime.now,
-        null=True,
-    )
+    task_date = DateField(null=True)
 
     class Meta:
         database = db

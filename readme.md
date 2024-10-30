@@ -66,13 +66,13 @@ with status `todo`:
 Get all tasks for today:
 
 ```sh
-/get_tasks
+/get_tasks -d today
 ```
 
 Get all tasks for today with `todo` status:
 
 ```sh
-/get_tasks -s todo
+/get_tasks -s todo -d today
 ```
 
 Get all tasks for specific date with `todo` status:
