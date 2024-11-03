@@ -102,7 +102,7 @@ def test_get_current_item():
     dates = ["11.07.1989", " toDay   "]
     ind = 0
     some_date = get_current_item(dates, ind, is_dates=True)
-    assert some_date == dates[0]
+    assert isinstance(some_date, datetime.date)
 
     ind = 1
     some_date = get_current_item(dates, ind, is_dates=True)
@@ -154,17 +154,18 @@ def test_parse_task_items():
     task_items = parse_task_items(parsed_dict)
     assert len(task_items) == 3
 
+    adate = datetime.datetime.strptime(some_dates[0], "%d.%m.%Y")
     assert task_items[0].title == some_titles[0]
     assert task_items[0].index is None
     assert task_items[0].status == some_statuses[0]
-    assert task_items[0].task_date == some_dates[0]
+    assert task_items[0].task_date == adate
 
     assert task_items[1].title == some_titles[1]
     assert task_items[1].index is None
     assert task_items[1].status == some_statuses[1]
-    assert task_items[1].task_date == some_dates[0]
+    assert task_items[1].task_date == adate
 
     assert task_items[2].title is None
     assert task_items[2].index is None
     assert task_items[2].status == some_statuses[2]
-    assert task_items[1].task_date == some_dates[0]
+    assert task_items[1].task_date == adate

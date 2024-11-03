@@ -63,6 +63,12 @@ with status `todo`:
 
 ### How to get tasks (`/get_tasks` command):
 
+Get all tasks:
+
+```sh
+/get_tasks
+```
+
 Get all tasks for today:
 
 ```sh

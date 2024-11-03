@@ -41,8 +41,12 @@ async def add_tasks(message):
         try:
             task = Task.create(
                 title=task_item.title.strip().lower(),
-                status=task_item.status,
-                task_date=task_item.task_date,
+                status=task_item.status if task_item.status else "todo",
+                task_date=(
+                    None
+                    if task_item.task_date == "nodate"
+                    else task_item.task_date
+                ),
             )
         except Exception as exc:
             await bot.reply_to(
@@ -74,13 +78,59 @@ async def get_tasks(message):
     stats = defaultdict(int)
     for task_item in task_items:
         try:
-            # TODO: think more about it
-            query = Task.select().where(
-                Task.task_date == task_item.task_date,
-                Task.status == task_item.status,
-                Task.title == task_item.title,
-                Task.id == task_item.index,
-            )
+            # 0 0 0 0
+            if all(
+                (
+                    not task_item.task_date,
+                    not task_item.status,
+                    not task_item.title,
+                    not task_item.index,
+                )
+            ):
+                query = Task.select()
+            # 0 0 0 1
+            elif all(
+                (
+                    not task_item.task_date,
+                    not task_item.status,
+                    not task_item.title,
+                    task_item.index,
+                )
+            ):
+                query = Task.select().where(
+                    Task.id == task_item.index,
+                )
+            # 0 0 1 0
+            elif all(
+                (
+                    not task_item.task_date,
+                    not task_item.status,
+                    task_item.title,
+                    not task_item.index,
+                )
+            ):
+                query = Task.select().where(
+                    Task.title.contains(task_item.title),
+                )
+            # 0 0 1 1
+            elif all(
+                (
+                    not task_item.task_date,
+                    not task_item.status,
+                    task_item.title,
+                    task_item.index,
+                )
+            ):
+                query = Task.select().where(
+                    Task.title.contains(task_item.title),
+                    Task.id == task_item.index,
+                )
+            # 0 1 0 0
+            elif all(()):
+                pass
+            # 1 1 1 1
+            else:
+                pass
             for task in query:
                 tasks.append(str(task))
                 stats[task.status] += 1

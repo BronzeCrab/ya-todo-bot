@@ -6,6 +6,8 @@ from bot.task_dc import TaskItem
 
 config = dotenv_values(".env")
 
+DATE_FMT = config["DATE_FMT"]
+
 
 async def check_user(bot, message, username: str) -> bool:
     if message.chat.username != config["MY_TG_USERNAME"]:
@@ -107,6 +109,19 @@ def convert_str_date_to_datetime(possible_date_str):
         possible_date_str
     ) is str and possible_date_str.strip().lower().startswith("tom"):
         return datetime.today().date() + timedelta(days=1)
+    elif type(
+        possible_date_str
+    ) is str and possible_date_str.strip().lower() in (
+        "nd",
+        "no_date",
+        "nodate",
+        "ndate",
+        "n_date",
+    ):
+        return "nodate"
+    elif type(possible_date_str) is str:
+        return datetime.strptime(possible_date_str, DATE_FMT)
+
     return possible_date_str
 
 

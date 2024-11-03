@@ -36,6 +36,19 @@ def test_task_create_with_not_null_date(db_connection):
     assert task.status == "todo"
 
 
+def test_task_create_with_str_date(db_connection):
+    assert Task.select().count() == 0
+    str_date = "11.07.1989"
+    task = Task.create(
+        title="test",
+        task_date=str_date,
+    )
+    assert Task.select().where(Task.title == str_date).count() == 0
+    assert task.title == "test"
+    assert isinstance(task.task_date, str)
+    assert task.status == "todo"
+
+
 def test_task_create_no_title(db_connection):
     assert Task.select().count() == 0
     with pytest.raises(IntegrityError) as err:
