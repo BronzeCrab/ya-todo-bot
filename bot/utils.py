@@ -126,15 +126,20 @@ def convert_str_date_to_datetime(possible_date_str):
 
 
 def check_status(possible_status):
-    allowed_statuses = config["POSSIBLE_STATUSES"].split(";")
-    allowed_statuses = [st.lower().strip() for st in allowed_statuses]
-    if (
-        type(possible_status) is str
-        and possible_status.strip().lower() not in allowed_statuses
-    ):
-        raise Exception(
-            f"ERROR: status {possible_status} is not allowed, allowed: {allowed_statuses}"
-        )
+    if possible_status:
+        allowed_statuses = config["POSSIBLE_STATUSES"].split(";")
+        allowed_statuses = [st.lower().strip() for st in allowed_statuses]
+
+        if "+" in possible_status:
+            possible_statuses = possible_status.split("+")
+        else:
+            possible_statuses = [possible_status]
+
+        for p_s in possible_statuses:
+            if p_s.strip().lower() not in allowed_statuses:
+                raise Exception(
+                    f"ERROR: status {p_s} is not allowed, allowed: {allowed_statuses}"
+                )
 
 
 def get_current_item(

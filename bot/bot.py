@@ -98,7 +98,7 @@ async def get_tasks(message):
                 )
             ):
                 query = Task.select().where(
-                    Task.id == task_item.index,
+                    Task.id == int(task_item.index),
                 )
             # 0 0 1 0
             elif all(
@@ -110,7 +110,7 @@ async def get_tasks(message):
                 )
             ):
                 query = Task.select().where(
-                    Task.title.contains(task_item.title),
+                    Task.title.contains(task_item.title.strip()),
                 )
             # 0 0 1 1
             elif all(
@@ -122,8 +122,8 @@ async def get_tasks(message):
                 )
             ):
                 query = Task.select().where(
-                    Task.title.contains(task_item.title),
-                    Task.id == task_item.index,
+                    Task.title.contains(task_item.title.strip()),
+                    Task.id == int(task_item.index),
                 )
             # 0 1 0 0
             elif all(()):

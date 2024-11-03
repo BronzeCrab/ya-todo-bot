@@ -22,5 +22,9 @@ class Task(Model):
         return f"Task_id: {self.id}, status: {self.status}, title: {self.title} date: {self.task_date}"
 
 
+def check_if_task_exitsts(title: str) -> bool:
+    return Task.select().where(Task.title ** title.strip()).exists()
+
+
 db.connect()
 db.create_tables([Task])

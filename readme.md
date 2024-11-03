@@ -106,3 +106,9 @@ i.e. all tasks with both statues from two dates):
 ```sh
 python -m pytest
 ```
+
+### How to run specific test:
+
+```sh
+python -m pytest -vvv tests/test_utils.py::test_get_tasks_plus_statuses
+```

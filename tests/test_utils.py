@@ -22,12 +22,12 @@ def test_parse_args_edit_tasks():
 
 
 def test_add_tasks_for_today():
-    command_str = "/add_tasks -d today -t title1;title2 -s todo"
+    command_str = "/add_tasks -d today -t title1;title2 -s todo;done"
     parsed_dict = parse_args(command_str)
     assert parsed_dict == {
         "dates": ["today"],
         "titles": ["title1", "title2"],
-        "statuses": ["todo"],
+        "statuses": ["todo", "done"],
     }
 
 
@@ -65,6 +65,11 @@ def test_get_tasks_ok():
 
     parsed_dict = parse_args("/get_tasks -d 11.07.1989")
     assert parsed_dict == {"dates": ["11.07.1989"]}
+
+
+def test_get_tasks_plus_statuses():
+    parsed_dict = parse_args("/get_tasks -d 11.07.1989 -s todo+done")
+    assert parsed_dict == {"dates": ["11.07.1989"], "statuses": ["todo+done"]}
 
 
 def test_get_tasks_wrong():
