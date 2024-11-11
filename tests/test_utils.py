@@ -36,16 +36,14 @@ def test_add_tasks_no_args():
     with pytest.raises(Exception) as exc:
         parse_args(command_str)
     assert (
-        str(exc.value)
-        == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
+        str(exc.value) == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
     )
 
     command_str = "/add_tasks -i 1;2"
     with pytest.raises(Exception) as exc:
         parse_args(command_str)
     assert (
-        str(exc.value)
-        == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
+        str(exc.value) == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
     )
 
 
@@ -53,10 +51,7 @@ def test_edit_tasks_no_args():
     command_str = "/edit_tasks"
     with pytest.raises(Exception) as exc:
         parse_args(command_str)
-    assert (
-        str(exc.value)
-        == f"ERROR: no valid command args in command {command_str}"
-    )
+    assert str(exc.value) == f"ERROR: no valid command args in command {command_str}"
 
 
 def test_get_tasks_ok():
@@ -87,7 +82,7 @@ def test_get_current_item():
     statuses = ["todo", "doing", "done"]
     ind = 0
     status = get_current_item(statuses, ind, is_statuses=True)
-    assert status == statuses[ind]
+    assert status == [statuses[ind]]
 
     statuses = ["todo", "doing", "done"]
     ind = len(statuses)
@@ -129,9 +124,7 @@ def test_get_current_item_status_exception():
     ind = 1
     with pytest.raises(Exception) as exc:
         get_current_item(statuses, ind, is_statuses=True)
-    assert str(exc.value).startswith(
-        f"ERROR: status {statuses[ind]} is not allowed"
-    )
+    assert str(exc.value).startswith(f"ERROR: status {statuses[ind]} is not allowed")
 
 
 def test_parse_task_items():
@@ -162,15 +155,15 @@ def test_parse_task_items():
     adate = datetime.datetime.strptime(some_dates[0], "%d.%m.%Y")
     assert task_items[0].title == some_titles[0]
     assert task_items[0].index is None
-    assert task_items[0].status == some_statuses[0]
+    assert task_items[0].status == [some_statuses[0]]
     assert task_items[0].task_date == adate
 
     assert task_items[1].title == some_titles[1]
     assert task_items[1].index is None
-    assert task_items[1].status == some_statuses[1]
+    assert task_items[1].status == [some_statuses[1]]
     assert task_items[1].task_date == adate
 
     assert task_items[2].title is None
     assert task_items[2].index is None
-    assert task_items[2].status == some_statuses[2]
+    assert task_items[2].status == [some_statuses[2]]
     assert task_items[1].task_date == adate

@@ -69,19 +69,15 @@ def test_task_create_no_title(db_connection):
     assert Task.select().count() == 0
 
 
-def test_task_create_duplicate_err(db_connection, created_task):
+def test_task_create_duplicate_err(created_task):
     assert Task.select().count() == 1
     with pytest.raises(IntegrityError) as err:
-        task = Task.create(
-            title=created_task.title, task_date=created_task.task_date
-        )
-    assert (
-        str(err.value) == "UNIQUE constraint failed: task.title, task.task_date"
-    )
+        task = Task.create(title=created_task.title, task_date=created_task.task_date)
+    assert str(err.value) == "UNIQUE constraint failed: task.title, task.task_date"
     assert Task.select().count() == 1
 
 
-def test_query_task_by_id(db_connection, created_task):
+def test_query_task_by_id(created_task):
     assert Task.select().count() == 1
 
     task = Task.select().where(Task.id == created_task.id).get()
@@ -90,7 +86,7 @@ def test_query_task_by_id(db_connection, created_task):
     assert task.title == created_task.title
 
 
-def test_check_if_task_exitsts(db_connection, created_task):
+def test_check_if_task_exitsts(created_task):
     assert check_if_task_exitsts(created_task.title) is True
     assert check_if_task_exitsts("afoobar42") is False
 

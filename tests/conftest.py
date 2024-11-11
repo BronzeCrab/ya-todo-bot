@@ -15,11 +15,10 @@ def db_connection():
     yield test_db
     q = Task.delete()
     q.execute()
-    path.unlink()
 
 
 @pytest.fixture(scope="function")
-def created_task():
+def created_task(db_connection):
     assert Task.select().count() == 0
     task = Task.create(title="test", task_date=datetime.today().date())
     assert Task.select().count() == 1
