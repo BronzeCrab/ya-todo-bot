@@ -1,5 +1,5 @@
-pyTelegramBotAPI==4.23.0
+pyTelegramBotAPI==4.24.0
 python-dotenv==1.0.1
-aiohttp==3.10.10
-peewee==3.17.7
+aiohttp==3.11.7
+peewee==3.17.8
 pytest==8.3.3
