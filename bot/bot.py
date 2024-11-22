@@ -43,7 +43,9 @@ async def add_tasks(message):
                 title=task_item.title.strip().lower(),
                 status=task_item.status if task_item.status else "todo",
                 task_date=(
-                    None if task_item.task_date == "nodate" else task_item.task_date
+                    None
+                    if task_item.task_date == "nodate"
+                    else task_item.task_date
                 ),
             )
         except Exception as exc:
@@ -158,7 +160,9 @@ async def get_tasks(message):
 
 c1 = types.BotCommand(command="start", description="Start the Bot")
 c2 = types.BotCommand(command="add_tasks", description="Add some Tasks")
-c3 = types.BotCommand(command="get_tasks", description="Get all tasks for today")
+c3 = types.BotCommand(
+    command="get_tasks", description="Get all tasks for today"
+)
 
 
 asyncio.run(bot.set_my_commands([c1, c2, c3]))

@@ -101,6 +101,20 @@ i.e. all tasks with both statues from two dates):
 /get_tasks -d 27.10.2024;28.10.2024 -s todo+done
 ```
 
+### How to copy tasks from one date to another (`/copy_tasks` command):
+
+Copy all tasks from `today` to `tomorrow` with status `not_done`:
+
+```sh
+/copy_tasks -d today;tomorrow -s not_done
+```
+
+Copy all tasks from `today` to `tomorrow`:
+
+```sh
+/copy_tasks -d today;tomorrow
+```
+
 ## How to run tests:
 
 ```sh
