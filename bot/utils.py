@@ -51,53 +51,67 @@ def parse_args(command_str: str) -> dict:
             == possible_verbose_args[0]
         ):
             j = i + len(possible_verbose_args[0])
-            j = parse_arg(parsed_dict, command_str, j, possible_verbose_args[0][2:])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[0][2:]
+            )
             i = j
         elif (
             command_str[i : i + len(possible_verbose_args[1])].lower()
             == possible_verbose_args[1]
         ):
             j = i + len(possible_verbose_args[1])
-            j = parse_arg(parsed_dict, command_str, j, possible_verbose_args[1][2:])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[1][2:]
+            )
             i = j
         elif (
             command_str[i : i + len(possible_verbose_args[2])].lower()
             == possible_verbose_args[2]
         ):
             j = i + len(possible_verbose_args[2])
-            j = parse_arg(parsed_dict, command_str, j, possible_verbose_args[2][2:])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[2][2:]
+            )
             i = j
         elif (
             command_str[i : i + len(possible_verbose_args[3])].lower()
             == possible_verbose_args[3]
         ):
             j = i + len(possible_verbose_args[3])
-            j = parse_arg(parsed_dict, command_str, j, possible_verbose_args[3][2:])
+            j = parse_arg(
+                parsed_dict, command_str, j, possible_verbose_args[3][2:]
+            )
             i = j
         else:
             i += 1
 
     # /add_tasks command should has some titles:
     if command_str.startswith("/add_tasks") and "titles" not in parsed_dict:
-        raise Exception(f"ERROR: no '-t' or '--titles' arg in command {command_str}")
+        raise Exception(
+            f"ERROR: no '-t' or '--titles' arg in command {command_str}"
+        )
 
     # all command except /get_tasks should have some args:
     elif not command_str.startswith("/get_tasks") and not parsed_dict:
-        raise Exception(f"ERROR: no valid command args in command {command_str}")
+        raise Exception(
+            f"ERROR: no valid command args in command {command_str}"
+        )
 
     return parsed_dict
 
 
 def convert_str_date_to_datetime(possible_date_str):
-    if type(possible_date_str) is str and possible_date_str.strip().lower().startswith(
-        "tod"
-    ):
+    if type(
+        possible_date_str
+    ) is str and possible_date_str.strip().lower().startswith("tod"):
         return datetime.today().date()
     elif type(
         possible_date_str
     ) is str and possible_date_str.strip().lower().startswith("tom"):
         return datetime.today().date() + timedelta(days=1)
-    elif type(possible_date_str) is str and possible_date_str.strip().lower() in (
+    elif type(
+        possible_date_str
+    ) is str and possible_date_str.strip().lower() in (
         "nd",
         "no_date",
         "nodate",
