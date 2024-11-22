@@ -1,8 +1,8 @@
-## What is it:
+# What is it
 
 It's yet another todo app, but as telegram bot.
 
-## How to run it:
+## How to run it
 
 Install dependencies:
 
@@ -23,18 +23,19 @@ also, you can specify `POSSIBLE_STATUSES` divided by `;` and your `DATE_FMT` as 
 python -m bot.bot
 ```
 
-## How to use this bot:
+## How to use this bot
 
 This bot has several commands: `/add_tasks`, `/get_tasks`, `/edit_tasks`, `/delete_tasks`,
 `/copy_tasks`, `/move_tasks`
 
-### How to create tasks (`/add_tasks` command):
+### How to create tasks (`/add_tasks` command)
 
 Create two tasks with titles `title1` and `title2` for current date:
 
 ```sh
 /add_tasks -t title1;title2
 ```
+
 Or, you can do exactly the same command with another arg name:
 
 ```sh
@@ -61,7 +62,7 @@ with status `todo`:
 /add_tasks -t title1;title2 -d today -s todo
 ```
 
-### How to get tasks (`/get_tasks` command):
+### How to get tasks (`/get_tasks` command)
 
 Get all tasks:
 
@@ -101,7 +102,7 @@ i.e. all tasks with both statues from two dates):
 /get_tasks -d 27.10.2024;28.10.2024 -s todo+done
 ```
 
-### How to copy tasks from one date to another (`/copy_tasks` command):
+### How to copy tasks from one date to another (`/copy_tasks` command)
 
 Copy all tasks from `today` to `tomorrow` with status `not_done`:
 
@@ -115,13 +116,13 @@ Copy all tasks from `today` to `tomorrow`:
 /copy_tasks -d today;tomorrow
 ```
 
-## How to run tests:
+## How to run tests
 
 ```sh
 python -m pytest
 ```
 
-### How to run specific test:
+### How to run specific test
 
 ```sh
 python -m pytest -vvv tests/test_utils.py::test_get_tasks_plus_statuses
