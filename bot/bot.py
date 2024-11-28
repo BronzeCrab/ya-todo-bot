@@ -1,5 +1,4 @@
 import asyncio
-from datetime import datetime
 from collections import defaultdict
 import json
 
@@ -7,6 +6,7 @@ from telebot import types
 from telebot.async_telebot import AsyncTeleBot
 
 from bot.utils import check_user, config, parse_args, parse_task_items
+from bot.task_dc import TaskItem
 from db.db_stuff import Task
 
 bot = AsyncTeleBot(config["BOT_API_KEY"])
@@ -29,7 +29,7 @@ async def add_tasks(message):
 
     try:
         parsed_dict = parse_args(message.text)
-        task_items = parse_task_items(parsed_dict)
+        task_items: list[TaskItem] = parse_task_items(parsed_dict)
     except Exception as exc:
         await bot.reply_to(
             message,
@@ -66,7 +66,7 @@ async def get_tasks(message):
         return
     try:
         parsed_dict = parse_args(message.text)
-        task_items = parse_task_items(parsed_dict)
+        task_items: list[TaskItem] = parse_task_items(parsed_dict)
     except Exception as exc:
         await bot.reply_to(
             message,
@@ -110,7 +110,7 @@ async def get_tasks(message):
                 )
             ):
                 query = Task.select().where(
-                    Task.title.contains(task_item.title.strip()),
+                    Task.title.contains(task_item.title),
                 )
             # 0 0 1 1
             elif all(
@@ -122,19 +122,45 @@ async def get_tasks(message):
                 )
             ):
                 query = Task.select().where(
-                    Task.title.contains(task_item.title.strip()),
+                    Task.title.contains(task_item.title),
                     Task.id == int(task_item.index),
                 )
             # 0 1 0 0
             elif all(
                 (
-                    task_item.task_date,
-                    not task_item.status,
-                    task_item.title,
-                    task_item.index,
+                    not task_item.task_date,
+                    task_item.status,
+                    not task_item.title,
+                    not task_item.index,
                 )
             ):
                 query = Task.select().where(Task.status.in_(task_item.status))
+            # 0 1 0 1
+            elif all(
+                (
+                    not task_item.task_date,
+                    task_item.status,
+                    not task_item.title,
+                    task_item.index,
+                )
+            ):
+                query = Task.select().where(
+                    Task.status.in_(task_item.status),
+                    Task.id == int(task_item.index),
+                )
+            # 0 1 1 0
+            elif all(
+                (
+                    not task_item.task_date,
+                    task_item.status,
+                    task_item.title,
+                    not task_item.index,
+                )
+            ):
+                query = Task.select().where(
+                    Task.status.in_(task_item.status),
+                    Task.title.contains(task_item.title),
+                )
             # 1 1 1 1
             else:
                 pass

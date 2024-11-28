@@ -100,7 +100,7 @@ def parse_args(command_str: str) -> dict:
     return parsed_dict
 
 
-def convert_str_date_to_datetime(possible_date_str):
+def convert_str_date_to_datetime(possible_date_str: str | None):
     if type(
         possible_date_str
     ) is str and possible_date_str.strip().lower().startswith("tod"):
@@ -121,13 +121,14 @@ def convert_str_date_to_datetime(possible_date_str):
         return "nodate"
     elif type(possible_date_str) is str:
         return datetime.strptime(possible_date_str, DATE_FMT)
-
+    elif possible_date_str is None:
+        return datetime.today().date()
     return possible_date_str
 
 
 def check_status(possible_status) -> list[str]:
     if possible_status:
-        allowed_statuses = config["POSSIBLE_STATUSES"].split(";")
+        allowed_statuses = config["ALLOWED_STATUSES"].split(";")
         allowed_statuses = [st.lower().strip() for st in allowed_statuses]
 
         if "+" in possible_status:
@@ -135,12 +136,19 @@ def check_status(possible_status) -> list[str]:
         else:
             possible_statuses = [possible_status]
 
-        for p_s in possible_statuses:
-            if p_s.strip().lower() not in allowed_statuses:
+        for i, p_s in enumerate(possible_statuses):
+            p_s_strip_lower = p_s.strip().lower()
+            if p_s_strip_lower not in allowed_statuses:
                 raise Exception(
-                    f"ERROR: status {p_s} is not allowed, allowed: {allowed_statuses}"
+                    f"ERROR: status {p_s_strip_lower} is not allowed, allowed: {allowed_statuses}"
                 )
+            possible_statuses[i] = p_s_strip_lower
         return possible_statuses
+
+
+def check_title(title) -> str | None:
+    if type(title) is str:
+        return title.strip().lower()
 
 
 def get_current_item(
@@ -148,6 +156,7 @@ def get_current_item(
     ind: int,
     is_dates=False,
     is_statuses=False,
+    is_titles=False,
 ):
     if ind < len(alist):
         item = alist[ind]
@@ -160,6 +169,8 @@ def get_current_item(
         return convert_str_date_to_datetime(item)
     elif is_statuses:
         return check_status(item)
+    elif is_titles:
+        return check_title(item)
     return item
 
 
@@ -182,7 +193,7 @@ def parse_task_items(parsed_dict: dict) -> list[TaskItem]:
         and i >= len(indexes)
         and i >= len(statuses)
     ):
-        title = get_current_item(titles, i)
+        title = get_current_item(titles, i, is_titles=True)
         task_date = get_current_item(task_dates, i, is_dates=True)
         index = get_current_item(indexes, i)
         status = get_current_item(statuses, i, is_statuses=True)

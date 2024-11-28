@@ -62,6 +62,13 @@ with status `todo`:
 /add_tasks -t title1;title2 -d today -s todo
 ```
 
+Create two tasks with titles `title1` and `title2` without date
+with statuses `todo`:
+
+```sh
+/add_tasks -t title1;title2 -d nodate -s todo
+```
+
 ### How to get tasks (`/get_tasks` command)
 
 Get all tasks:
@@ -114,6 +121,18 @@ Copy all tasks from `today` to `tomorrow`:
 
 ```sh
 /copy_tasks -d today;tomorrow
+```
+
+Copy all tasks from `today` to specific date:
+
+```sh
+/copy_tasks -d today;11.07.2025
+```
+
+Copy all tasks with from one specifc date to specific date:
+
+```sh
+/copy_tasks -d 11.07.2024;11.07.2025
 ```
 
 ## How to run tests
