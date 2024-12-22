@@ -161,6 +161,20 @@ async def get_tasks(message):
                     Task.status.in_(task_item.status),
                     Task.title.contains(task_item.title),
                 )
+            # 0 1 1 1
+            elif all(
+                (
+                    not task_item.task_date,
+                    task_item.status,
+                    task_item.title,
+                    task_item.index,
+                )
+            ):
+                query = Task.select().where(
+                    Task.status.in_(task_item.status),
+                    Task.title.contains(task_item.title),
+                    Task.id == int(task_item.index),
+                )
             # 1 1 1 1
             else:
                 pass

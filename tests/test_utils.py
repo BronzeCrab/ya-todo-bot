@@ -36,14 +36,16 @@ def test_add_tasks_no_args():
     with pytest.raises(Exception) as exc:
         parse_args(command_str)
     assert (
-        str(exc.value) == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
+        str(exc.value)
+        == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
     )
 
     command_str = "/add_tasks -i 1;2"
     with pytest.raises(Exception) as exc:
         parse_args(command_str)
     assert (
-        str(exc.value) == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
+        str(exc.value)
+        == f"ERROR: no '-t' or '--titles' arg in command {command_str}"
     )
 
 
@@ -51,7 +53,10 @@ def test_edit_tasks_no_args():
     command_str = "/edit_tasks"
     with pytest.raises(Exception) as exc:
         parse_args(command_str)
-    assert str(exc.value) == f"ERROR: no valid command args in command {command_str}"
+    assert (
+        str(exc.value)
+        == f"ERROR: no valid command args in command {command_str}"
+    )
 
 
 def test_get_tasks_ok():
@@ -124,7 +129,9 @@ def test_get_current_item_status_exception():
     ind = 1
     with pytest.raises(Exception) as exc:
         get_current_item(statuses, ind, is_statuses=True)
-    assert str(exc.value).startswith(f"ERROR: status {statuses[ind]} is not allowed")
+    assert str(exc.value).startswith(
+        f"ERROR: status {statuses[ind]} is not allowed"
+    )
 
 
 def test_parse_task_items():
@@ -139,7 +146,7 @@ def test_parse_task_items():
     assert task_items[0].title == some_title
     assert task_items[0].index is None
     assert task_items[0].status is None
-    assert task_items[0].task_date is None
+    assert task_items[0].task_date is not None
 
     some_titles = ["title1", "title2"]
     some_dates = ["27.10.2024"]

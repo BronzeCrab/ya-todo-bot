@@ -123,7 +123,8 @@ def convert_str_date_to_datetime(possible_date_str: str | None):
         return datetime.strptime(possible_date_str, DATE_FMT)
     elif possible_date_str is None:
         return datetime.today().date()
-    return possible_date_str
+
+    raise ValueError(f"invalid possible_date_str {possible_date_str}")
 
 
 def check_status(possible_status) -> list[str]:
